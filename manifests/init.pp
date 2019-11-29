@@ -54,5 +54,11 @@ class mc_conf {
 		command => "sort $mc_conf::mc_hotlist -o $mc_conf::mc_hotlist",
 		path => '/bin:/sbin:/usr/bin:/usr/sbin'
 	} ~> Exec['mc_conf_killall_mc']
+
+	exec { "mc_conf_hotlist_update_48":
+		refreshonly => true,
+		command => "sort $mc_conf::mc_hotlist_48 -o $mc_conf::mc_hotlist_48",
+		path => '/bin:/sbin:/usr/bin:/usr/sbin'
+	} ~> Exec['mc_conf_killall_mc']
 }
 
