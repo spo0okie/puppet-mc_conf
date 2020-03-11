@@ -1,4 +1,5 @@
 define mc_conf::hotlist () {
+	include mc_conf
 	file_line { "mc_hotlist_$title":
 		require => File[$mc_conf::mc_hotlist],
 		path => $mc_conf::mc_hotlist,
