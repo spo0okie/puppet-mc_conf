@@ -1,22 +1,47 @@
 class mc_conf {
 	require users::root
 	$mc_hotlist = '/root/.mc/hotlist'
+	$mc_hotlist_48 = '/root/.config/mc/hotlist'
 	package {'mc':			ensure => 'installed' } ->
+	file {'/root/.mc':
+		ensure => directory,
+		owner => 'root',
+		group => 'root',
+		mode => '0700'
+	} ->
 	file { $mc_hotlist:
 		ensure => file,
 		owner => 'root',
 		group => "${users::root::group}",
 		mode => '0644'
-	}
-	file {'/root/.mc':
+	}->
+	file {'/root/.config':
+		ensure => directory,
+		owner => 'root',
+		group => 'root',
+		mode => '0700'
+	} ->
+	file {'/root/.config/mc':
 		ensure => directory,
 		owner => 'root',
 		group => "${users::root::group}",
 		mode => '0700'
 	} ->
+	file { $mc_hotlist_48:
+		ensure => file,
+		owner => 'root',
+		group => 'root',
+		mode => '0644'
+	}->
 	file {'/root/.mc/ini':
 		owner => 'root',
 		group => "${users::root::group}",
+		source => 'puppet:///modules/mc_conf/ini',
+		mode => '0644'
+	} ->
+	file {'/root/.config/mc/ini':
+		owner => 'root',
+		group => 'root',
 		source => 'puppet:///modules/mc_conf/ini',
 		mode => '0644'
 	} ~>
@@ -28,6 +53,12 @@ class mc_conf {
 	exec { 'mc_conf_hotlist_update':
 		refreshonly => true,
 		command => "sort $mc_conf::mc_hotlist -o $mc_conf::mc_hotlist",
+		path => '/bin:/sbin:/usr/bin:/usr/sbin'
+	} ~> Exec['mc_conf_killall_mc']
+
+	exec { "mc_conf_hotlist_update_48":
+		refreshonly => true,
+		command => "sort $mc_conf::mc_hotlist_48 -o $mc_conf::mc_hotlist_48",
 		path => '/bin:/sbin:/usr/bin:/usr/sbin'
 	} ~> Exec['mc_conf_killall_mc']
 }
